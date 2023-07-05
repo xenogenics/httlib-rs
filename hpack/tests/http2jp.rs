@@ -1,11 +1,11 @@
+use std::{fs::File, io::BufReader};
+
 use glob::glob;
-use std::fs::File;
-use std::io::BufReader;
-use serde_json::{Value};
-use httlib_hpack::{Decoder};
+use httlib_hpack::Decoder;
+use serde_json::Value;
 
 /// Should decode stories provided by the [HTTP/2 Japan Community].
-/// 
+///
 /// [HTTP/2 Japan Community]: https://github.com/http2jp/hpack-test-case
 #[test]
 fn decodes_stories() {

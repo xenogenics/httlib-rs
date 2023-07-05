@@ -1,6 +1,6 @@
-use std::fmt;
-use std::error;
-use httlib_huffman::{EncoderError as HuffmanError};
+use std::{error, fmt};
+
+use httlib_huffman::EncoderError as HuffmanError;
 
 /// Contains error options that can be encountered while performing the encoding
 /// of an HPACK header set.
@@ -28,7 +28,7 @@ pub enum EncoderError {
 impl From<HuffmanError> for EncoderError {
     fn from(err: HuffmanError) -> Self {
         match err {
-            HuffmanError::InvalidInput => Self::InvalidInput
+            HuffmanError::InvalidInput => Self::InvalidInput,
         }
     }
 }

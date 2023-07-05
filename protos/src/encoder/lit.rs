@@ -1,5 +1,5 @@
 /// Provides encoder input format options.
-/// 
+///
 /// This is a list of all binary formats supported by the encoder.
 #[derive(Debug)]
 pub enum EncoderLit<'a> {

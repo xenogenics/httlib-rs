@@ -1,7 +1,9 @@
 /// Represents a static translation table for decoding Huffman sequence by
 /// reading 4-bits at at time.
-pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_id, ascii, leftover)
-    [ // 0
+pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [
+    // (next_id, ascii, leftover)
+    [
+        // 0
         (Some(15), None, 0),
         (Some(16), None, 0),
         (Some(26), None, 0),
@@ -17,9 +19,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (Some(21), None, 0),
         (Some(22), None, 0),
         (Some(23), None, 0),
-        (Some(1), None, 0)
+        (Some(1), None, 0),
     ],
-    [ // 1
+    [
+        // 1
         (None, Some(119), 1),
         (None, Some(119), 1),
         (None, Some(120), 1),
@@ -35,9 +38,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(88), 0),
         (None, Some(90), 0),
         (Some(13), None, 0),
-        (Some(2), None, 0)
+        (Some(2), None, 0),
     ],
-    [ // 2
+    [
+        // 2
         (None, Some(63), 2),
         (None, Some(63), 2),
         (None, Some(63), 2),
@@ -53,9 +57,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (Some(3), None, 0),
         (Some(20), None, 0),
         (Some(25), None, 0),
-        (Some(4), None, 0)
+        (Some(4), None, 0),
     ],
-    [ // 3
+    [
+        // 3
         (None, Some(0), 3),
         (None, Some(0), 3),
         (None, Some(0), 3),
@@ -71,9 +76,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(36), 3),
         (None, Some(36), 3),
         (None, Some(36), 3),
-        (None, Some(36), 3)
+        (None, Some(36), 3),
     ],
-    [ // 4
+    [
+        // 4
         (None, Some(94), 2),
         (None, Some(94), 2),
         (None, Some(94), 2),
@@ -89,9 +95,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(123), 1),
         (None, Some(123), 1),
         (Some(24), None, 0),
-        (Some(5), None, 0)
+        (Some(5), None, 0),
     ],
-    [ // 5
+    [
+        // 5
         (Some(39), None, 0),
         (Some(41), None, 0),
         (Some(49), None, 0),
@@ -107,9 +114,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (Some(33), None, 0),
         (Some(37), None, 0),
         (Some(9), None, 0),
-        (Some(7), None, 0)
+        (Some(7), None, 0),
     ],
-    [ // 6
+    [
+        // 6
         (None, Some(1), 1),
         (None, Some(1), 1),
         (None, Some(135), 1),
@@ -125,9 +133,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(141), 1),
         (None, Some(141), 1),
         (None, Some(143), 1),
-        (None, Some(143), 1)
+        (None, Some(143), 1),
     ],
-    [ // 7
+    [
+        // 7
         (None, Some(171), 0),
         (None, Some(206), 0),
         (None, Some(215), 0),
@@ -143,9 +152,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (Some(48), None, 0),
         (Some(53), None, 0),
         (Some(8), None, 0),
-        (Some(10), None, 0)
+        (Some(10), None, 0),
     ],
-    [ // 8
+    [
+        // 8
         (None, Some(254), 1),
         (None, Some(254), 1),
         (None, Some(2), 0),
@@ -161,9 +171,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(15), 0),
         (None, Some(16), 0),
         (None, Some(17), 0),
-        (None, Some(18), 0)
+        (None, Some(18), 0),
     ],
-    [ // 9
+    [
+        // 9
         (None, Some(188), 1),
         (None, Some(188), 1),
         (None, Some(191), 1),
@@ -179,9 +190,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(144), 0),
         (None, Some(145), 0),
         (None, Some(148), 0),
-        (None, Some(159), 0)
+        (None, Some(159), 0),
     ],
-    [ // 10
+    [
+        // 10
         (None, Some(19), 0),
         (None, Some(20), 0),
         (None, Some(21), 0),
@@ -197,9 +209,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(127), 0),
         (None, Some(220), 0),
         (None, Some(249), 0),
-        (Some(11), None, 0)
+        (Some(11), None, 0),
     ],
-    [ // 11
+    [
+        // 11
         (None, Some(10), 2),
         (None, Some(10), 2),
         (None, Some(10), 2),
@@ -215,9 +228,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(256), 2),
         (None, Some(256), 2),
         (None, Some(256), 2),
-        (None, Some(256), 2)
+        (None, Some(256), 2),
     ],
-    [ // 12
+    [
+        // 12
         (None, Some(32), 2),
         (None, Some(32), 2),
         (None, Some(32), 2),
@@ -233,9 +247,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(46), 2),
         (None, Some(46), 2),
         (None, Some(46), 2),
-        (None, Some(46), 2)
+        (None, Some(46), 2),
     ],
-    [ // 13
+    [
+        // 13
         (None, Some(33), 2),
         (None, Some(33), 2),
         (None, Some(33), 2),
@@ -251,9 +266,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(41), 2),
         (None, Some(41), 2),
         (None, Some(41), 2),
-        (None, Some(41), 2)
+        (None, Some(41), 2),
     ],
-    [ // 14
+    [
+        // 14
         (None, Some(47), 2),
         (None, Some(47), 2),
         (None, Some(47), 2),
@@ -269,9 +285,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(53), 2),
         (None, Some(53), 2),
         (None, Some(53), 2),
-        (None, Some(53), 2)
+        (None, Some(53), 2),
     ],
-    [ // 15
+    [
+        // 15
         (None, Some(48), 3),
         (None, Some(48), 3),
         (None, Some(48), 3),
@@ -287,9 +304,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(49), 3),
         (None, Some(49), 3),
         (None, Some(49), 3),
-        (None, Some(49), 3)
+        (None, Some(49), 3),
     ],
-    [ // 16
+    [
+        // 16
         (None, Some(50), 3),
         (None, Some(50), 3),
         (None, Some(50), 3),
@@ -305,9 +323,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(97), 3),
         (None, Some(97), 3),
         (None, Some(97), 3),
-        (None, Some(97), 3)
+        (None, Some(97), 3),
     ],
-    [ // 17
+    [
+        // 17
         (None, Some(54), 2),
         (None, Some(54), 2),
         (None, Some(54), 2),
@@ -323,9 +342,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(57), 2),
         (None, Some(57), 2),
         (None, Some(57), 2),
-        (None, Some(57), 2)
+        (None, Some(57), 2),
     ],
-    [ // 18
+    [
+        // 18
         (None, Some(114), 2),
         (None, Some(114), 2),
         (None, Some(114), 2),
@@ -341,9 +361,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(67), 1),
         (None, Some(67), 1),
         (None, Some(68), 1),
-        (None, Some(68), 1)
+        (None, Some(68), 1),
     ],
-    [ // 19
+    [
+        // 19
         (None, Some(61), 2),
         (None, Some(61), 2),
         (None, Some(61), 2),
@@ -359,9 +380,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(98), 2),
         (None, Some(98), 2),
         (None, Some(98), 2),
-        (None, Some(98), 2)
+        (None, Some(98), 2),
     ],
-    [ // 20
+    [
+        // 20
         (None, Some(64), 3),
         (None, Some(64), 3),
         (None, Some(64), 3),
@@ -377,9 +399,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(91), 3),
         (None, Some(91), 3),
         (None, Some(91), 3),
-        (None, Some(91), 3)
+        (None, Some(91), 3),
     ],
-    [ // 21
+    [
+        // 21
         (None, Some(69), 1),
         (None, Some(69), 1),
         (None, Some(70), 1),
@@ -395,9 +418,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(75), 1),
         (None, Some(75), 1),
         (None, Some(76), 1),
-        (None, Some(76), 1)
+        (None, Some(76), 1),
     ],
-    [ // 22
+    [
+        // 22
         (None, Some(77), 1),
         (None, Some(77), 1),
         (None, Some(78), 1),
@@ -413,9 +437,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(83), 1),
         (None, Some(83), 1),
         (None, Some(84), 1),
-        (None, Some(84), 1)
+        (None, Some(84), 1),
     ],
-    [ // 23
+    [
+        // 23
         (None, Some(85), 1),
         (None, Some(85), 1),
         (None, Some(86), 1),
@@ -431,9 +456,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(113), 1),
         (None, Some(113), 1),
         (None, Some(118), 1),
-        (None, Some(118), 1)
+        (None, Some(118), 1),
     ],
-    [ // 24
+    [
+        // 24
         (None, Some(92), 1),
         (None, Some(92), 1),
         (None, Some(195), 1),
@@ -449,9 +475,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(224), 0),
         (None, Some(226), 0),
         (Some(34), None, 0),
-        (Some(38), None, 0)
+        (Some(38), None, 0),
     ],
-    [ // 25
+    [
+        // 25
         (None, Some(93), 3),
         (None, Some(93), 3),
         (None, Some(93), 3),
@@ -467,9 +494,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(126), 3),
         (None, Some(126), 3),
         (None, Some(126), 3),
-        (None, Some(126), 3)
+        (None, Some(126), 3),
     ],
-    [ // 26
+    [
+        // 26
         (None, Some(99), 3),
         (None, Some(99), 3),
         (None, Some(99), 3),
@@ -485,9 +513,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(101), 3),
         (None, Some(101), 3),
         (None, Some(101), 3),
-        (None, Some(101), 3)
+        (None, Some(101), 3),
     ],
-    [ // 27
+    [
+        // 27
         (None, Some(100), 2),
         (None, Some(100), 2),
         (None, Some(100), 2),
@@ -503,9 +532,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(104), 2),
         (None, Some(104), 2),
         (None, Some(104), 2),
-        (None, Some(104), 2)
+        (None, Some(104), 2),
     ],
-    [ // 28
+    [
+        // 28
         (None, Some(105), 3),
         (None, Some(105), 3),
         (None, Some(105), 3),
@@ -521,9 +551,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(111), 3),
         (None, Some(111), 3),
         (None, Some(111), 3),
-        (None, Some(111), 3)
+        (None, Some(111), 3),
     ],
-    [ // 29
+    [
+        // 29
         (None, Some(108), 2),
         (None, Some(108), 2),
         (None, Some(108), 2),
@@ -539,9 +570,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(112), 2),
         (None, Some(112), 2),
         (None, Some(112), 2),
-        (None, Some(112), 2)
+        (None, Some(112), 2),
     ],
-    [ // 30
+    [
+        // 30
         (None, Some(115), 3),
         (None, Some(115), 3),
         (None, Some(115), 3),
@@ -557,9 +589,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(116), 3),
         (None, Some(116), 3),
         (None, Some(116), 3),
-        (None, Some(116), 3)
+        (None, Some(116), 3),
     ],
-    [ // 31
+    [
+        // 31
         (None, Some(230), 3),
         (None, Some(230), 3),
         (None, Some(230), 3),
@@ -575,9 +608,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(132), 2),
         (None, Some(132), 2),
         (None, Some(132), 2),
-        (None, Some(132), 2)
+        (None, Some(132), 2),
     ],
-    [ // 32
+    [
+        // 32
         (None, Some(133), 2),
         (None, Some(133), 2),
         (None, Some(133), 2),
@@ -593,9 +627,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(146), 2),
         (None, Some(146), 2),
         (None, Some(146), 2),
-        (None, Some(146), 2)
+        (None, Some(146), 2),
     ],
-    [ // 33
+    [
+        // 33
         (None, Some(147), 1),
         (None, Some(147), 1),
         (None, Some(149), 1),
@@ -611,9 +646,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(157), 1),
         (None, Some(157), 1),
         (None, Some(158), 1),
-        (None, Some(158), 1)
+        (None, Some(158), 1),
     ],
-    [ // 34
+    [
+        // 34
         (None, Some(153), 3),
         (None, Some(153), 3),
         (None, Some(153), 3),
@@ -629,9 +665,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(161), 3),
         (None, Some(161), 3),
         (None, Some(161), 3),
-        (None, Some(161), 3)
+        (None, Some(161), 3),
     ],
-    [ // 35
+    [
+        // 35
         (None, Some(154), 2),
         (None, Some(154), 2),
         (None, Some(154), 2),
@@ -647,9 +684,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(163), 2),
         (None, Some(163), 2),
         (None, Some(163), 2),
-        (None, Some(163), 2)
+        (None, Some(163), 2),
     ],
-    [ // 36
+    [
+        // 36
         (None, Some(164), 2),
         (None, Some(164), 2),
         (None, Some(164), 2),
@@ -665,9 +703,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(173), 2),
         (None, Some(173), 2),
         (None, Some(173), 2),
-        (None, Some(173), 2)
+        (None, Some(173), 2),
     ],
-    [ // 37
+    [
+        // 37
         (None, Some(165), 1),
         (None, Some(165), 1),
         (None, Some(166), 1),
@@ -683,9 +722,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(182), 1),
         (None, Some(182), 1),
         (None, Some(183), 1),
-        (None, Some(183), 1)
+        (None, Some(183), 1),
     ],
-    [ // 38
+    [
+        // 38
         (None, Some(167), 3),
         (None, Some(167), 3),
         (None, Some(167), 3),
@@ -701,9 +741,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(172), 3),
         (None, Some(172), 3),
         (None, Some(172), 3),
-        (None, Some(172), 3)
+        (None, Some(172), 3),
     ],
-    [ // 39
+    [
+        // 39
         (None, Some(176), 3),
         (None, Some(176), 3),
         (None, Some(176), 3),
@@ -719,9 +760,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(177), 3),
         (None, Some(177), 3),
         (None, Some(177), 3),
-        (None, Some(177), 3)
+        (None, Some(177), 3),
     ],
-    [ // 40
+    [
+        // 40
         (None, Some(178), 2),
         (None, Some(178), 2),
         (None, Some(178), 2),
@@ -737,9 +779,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(186), 2),
         (None, Some(186), 2),
         (None, Some(186), 2),
-        (None, Some(186), 2)
+        (None, Some(186), 2),
     ],
-    [ // 41
+    [
+        // 41
         (None, Some(179), 3),
         (None, Some(179), 3),
         (None, Some(179), 3),
@@ -755,9 +798,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(209), 3),
         (None, Some(209), 3),
         (None, Some(209), 3),
-        (None, Some(209), 3)
+        (None, Some(209), 3),
     ],
-    [ // 42
+    [
+        // 42
         (None, Some(187), 2),
         (None, Some(187), 2),
         (None, Some(187), 2),
@@ -773,9 +817,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(196), 2),
         (None, Some(196), 2),
         (None, Some(196), 2),
-        (None, Some(196), 2)
+        (None, Some(196), 2),
     ],
-    [ // 43
+    [
+        // 43
         (None, Some(192), 2),
         (None, Some(192), 2),
         (None, Some(192), 2),
@@ -791,9 +836,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(201), 2),
         (None, Some(201), 2),
         (None, Some(201), 2),
-        (None, Some(201), 2)
+        (None, Some(201), 2),
     ],
-    [ // 44
+    [
+        // 44
         (None, Some(198), 2),
         (None, Some(198), 2),
         (None, Some(198), 2),
@@ -809,9 +855,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(233), 2),
         (None, Some(233), 2),
         (None, Some(233), 2),
-        (None, Some(233), 2)
+        (None, Some(233), 2),
     ],
-    [ // 45
+    [
+        // 45
         (None, Some(199), 3),
         (None, Some(199), 3),
         (None, Some(199), 3),
@@ -827,9 +874,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(207), 3),
         (None, Some(207), 3),
         (None, Some(207), 3),
-        (None, Some(207), 3)
+        (None, Some(207), 3),
     ],
-    [ // 46
+    [
+        // 46
         (None, Some(202), 2),
         (None, Some(202), 2),
         (None, Some(202), 2),
@@ -845,9 +893,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(213), 2),
         (None, Some(213), 2),
         (None, Some(213), 2),
-        (None, Some(213), 2)
+        (None, Some(213), 2),
     ],
-    [ // 47
+    [
+        // 47
         (None, Some(242), 2),
         (None, Some(242), 2),
         (None, Some(242), 2),
@@ -863,9 +912,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(203), 1),
         (None, Some(203), 1),
         (None, Some(204), 1),
-        (None, Some(204), 1)
+        (None, Some(204), 1),
     ],
-    [ // 48
+    [
+        // 48
         (None, Some(211), 1),
         (None, Some(211), 1),
         (None, Some(212), 1),
@@ -881,9 +931,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(241), 1),
         (None, Some(241), 1),
         (None, Some(244), 1),
-        (None, Some(244), 1)
+        (None, Some(244), 1),
     ],
-    [ // 49
+    [
+        // 49
         (None, Some(216), 3),
         (None, Some(216), 3),
         (None, Some(216), 3),
@@ -899,9 +950,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(217), 3),
         (None, Some(217), 3),
         (None, Some(217), 3),
-        (None, Some(217), 3)
+        (None, Some(217), 3),
     ],
-    [ // 50
+    [
+        // 50
         (None, Some(218), 2),
         (None, Some(218), 2),
         (None, Some(218), 2),
@@ -917,9 +969,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(240), 2),
         (None, Some(240), 2),
         (None, Some(240), 2),
-        (None, Some(240), 2)
+        (None, Some(240), 2),
     ],
-    [ // 51
+    [
+        // 51
         (None, Some(227), 3),
         (None, Some(227), 3),
         (None, Some(227), 3),
@@ -935,9 +988,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(229), 3),
         (None, Some(229), 3),
         (None, Some(229), 3),
-        (None, Some(229), 3)
+        (None, Some(229), 3),
     ],
-    [ // 52
+    [
+        // 52
         (None, Some(234), 3),
         (None, Some(234), 3),
         (None, Some(234), 3),
@@ -953,9 +1007,10 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(235), 3),
         (None, Some(235), 3),
         (None, Some(235), 3),
-        (None, Some(235), 3)
+        (None, Some(235), 3),
     ],
-    [ // 53
+    [
+        // 53
         (None, Some(245), 1),
         (None, Some(245), 1),
         (None, Some(246), 1),
@@ -971,6 +1026,6 @@ pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 16]; 54] = [ // (next_i
         (None, Some(252), 1),
         (None, Some(252), 1),
         (None, Some(253), 1),
-        (None, Some(253), 1)
-    ]
+        (None, Some(253), 1),
+    ],
 ];

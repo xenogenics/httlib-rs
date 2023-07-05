@@ -1,7 +1,4 @@
-use std::error;
-use std::fmt;
-use std::io;
-use std::convert;
+use std::{convert, error, fmt, io};
 
 /// Contains error options that can be encountered while performing the encoding
 /// operations.
@@ -13,7 +10,7 @@ pub enum EncoderError {
     /// Indicates that the encoder encountered an I/O interruption. Interrupted
     /// operations can typically be retried.
     Interrupted,
-    
+
     /// Indicates that the encoder was unable to proceed due to the key's
     /// invalid tag number. A tag number must be unique per message and the
     /// value can be between `1` and `2^29 - 1`.
@@ -26,7 +23,8 @@ impl From<io::Error> for EncoderError {
     }
 }
 
-impl From<convert::Infallible> for EncoderError { // until solved: https://github.com/rust-lang/rust/issues/64715
+impl From<convert::Infallible> for EncoderError {
+    // until solved: https://github.com/rust-lang/rust/issues/64715
     fn from(_: convert::Infallible) -> Self {
         unreachable!()
     }

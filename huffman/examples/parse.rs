@@ -3,8 +3,8 @@
 
 extern crate httlib_huffman;
 
-use std::fs;
-use std::path::Path;
+use std::{fs, path::Path};
+
 use httlib_huffman::parser::parse;
 
 fn main() {

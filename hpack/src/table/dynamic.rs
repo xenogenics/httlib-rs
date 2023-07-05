@@ -2,7 +2,7 @@ use std::collections::VecDeque;
 
 /// Represents a [dynamic table] with header fields maintained in first-in,
 /// first-out order.
-/// 
+///
 /// [dynamic table]: https://tools.ietf.org/html/rfc7541#section-2.3.2
 #[derive(Debug)]
 pub struct DynamicTable {
@@ -17,7 +17,7 @@ pub struct DynamicTable {
 
     /// The maximum size that the encoder is permitted to use for the dynamic
     /// table. In HTTP/2, this value is advertised through the SETTINGS frame by
-    /// the SETTINGS_HEADER_TABLE_SIZE field. The encoder can use less than or 
+    /// the SETTINGS_HEADER_TABLE_SIZE field. The encoder can use less than or
     /// equal to this value.
     max_size: u32,
 }
@@ -49,7 +49,7 @@ impl DynamicTable {
     }
 
     /// Updates the maximum allowed table size.
-    /// 
+    ///
     /// Whenever the maximum size is reduced, entries are evicted from the end
     /// of the table until the size of the table is less than or equal to the
     /// maximum size.
@@ -68,11 +68,11 @@ impl DynamicTable {
     }
 
     /// Inserts a new header at the beginning of the table.
-    /// 
+    ///
     /// When the header is added, the table size is automatically increased. The
     /// size of an entry is the sum of its name and value in octets without any
     /// Huffman encoding applied, and 32 ([4.1.]).
-    /// 
+    ///
     /// Before a new entry is added to the dynamic table, entries are evicted
     /// from the end of the table until the size of the table is less than or
     /// equal to the maximum allowed size or until the table is empty.
@@ -80,7 +80,7 @@ impl DynamicTable {
     /// If the size of the new entry is less than or equal to the maximum size,
     /// that entry is added to the table. Adding an entry larger than the
     /// maximum size causes the table to be emptied.
-    /// 
+    ///
     /// [4.1.]: https://tools.ietf.org/html/rfc7541#section-4.1
     pub fn insert(&mut self, name: Vec<u8>, value: Vec<u8>) {
         self.size += name.len() + value.len() + 32;

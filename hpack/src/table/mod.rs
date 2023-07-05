@@ -1,14 +1,14 @@
 //! Provides an implementation of the  HPACK [indexing tables].
-//! 
+//!
 //! Indexing table is a list, to which the [HPACK] saves the commonly used
 //! headers. Each entity indexes headers per connection, separately for incoming
 //! (decoding) and for outgoing (encoding) data.
-//! 
+//!
 //! The numbering of entries starts with index ‘1’ and the first 61 headers are
 //! static items, keeping their position in the table. These are specific
 //! headers, provided by the HPACK specification, based on their statistical
-//! relevance, and therefore deserve their permanent position in the table. 
-//! 
+//! relevance, and therefore deserve their permanent position in the table.
+//!
 //! Other headers are listed in the table from position 62 onwards and are
 //! called dynamic headers. Header entries are ordered as FIFO (first-in,
 //! first-out) and duplicated entries are allowed. Dynamic headers are always
@@ -17,52 +17,52 @@
 //! limit of how many bytes of the dynamic headers the table is allowed to
 //! store. When, while adding a header, this limit is crossed, the headers are
 //! evicted from the back of the table, so the table never exceeds the limit.
-//! 
+//!
 //! This specific functioning is addressed in the HPACk specification as two
 //! separate tables, to which it refers as the static and the dynamic table.
 //! However, we are dealing with a single list, where two tables are combined
 //! into a single address space for defining index values.
-//! 
-//! The illustration below shows the structure of the indexing table. 
-//! 
+//!
+//! The illustration below shows the structure of the indexing table.
+//!
 //! ```txt
 //! <---------- Index Address Space --------->
 //! <    Static Table   ><   Dynamic Table   >
 //! +--+-------------+--++--+-------------+--+
 //! |01|     ...     |61||62|     ...     |XX|
 //! +--+-------------+--++II+-------------+DD+
-//! 
+//!
 //! II = Insertion point
 //! DD = Dropping point
 //! ```
-//! 
+//!
 //! Let's see how such a table is used by entities. When a client sends the
 //! request, it can indicate in the header block that a particular header and
 //! potentially also its value, should be indexed. The table for outgoing
-//! headers on the client's side would thus look something like this: 
-//! 
+//! headers on the client's side would thus look something like this:
+//!
 //! | Index | Name | Value
 //! |-|-|-
-//! | 01 | :authority | 
+//! | 01 | :authority |
 //! | 02 | :method | GET
 //! | .. | ... | ...
 //! | 62 | name1 | value1
 //! | 63 | value2 | value2
-//! 
+//!
 //! On the server’s side, when it reads the headers it would create a table that
 //! would look exactly the same. If the next client request would send the same
 //! headers, it could simply send a header block including only header indexes:
-//! 
+//!
 //! ```txt
 //! 62 63
 //! ```
-//! 
+//!
 //! The server will then look up and expand into the full headers what those
 //! indexes represent. This essentially explains the whole concept. The
 //! mechanism is innovative and highly efficient. I guess no added discussion on
 //! its effects on the performance is necessary since there are plenty of
 //! benchmarks, proving its efficacy available online.
-//! 
+//!
 //! [HPACK]: https://tools.ietf.org/html/rfc7541
 //! [indexing tables]: https://tools.ietf.org/html/rfc7541#section-2.3
 
@@ -70,11 +70,11 @@ mod dynamic;
 mod iter;
 mod r#static;
 
-pub use iter::TableIter;
 use dynamic::DynamicTable;
+pub use iter::TableIter;
 use r#static::{StaticTable, STATIC_TABLE};
 
-/// A table representing a single index address space for headers where the 
+/// A table representing a single index address space for headers where the
 /// static and the dynamic table are combined.
 #[derive(Debug)]
 pub struct Table<'a> {
@@ -116,25 +116,28 @@ impl<'a> Table<'a> {
     pub fn max_dynamic_size(&self) -> u32 {
         self.dynamic_table.max_size()
     }
-    
+
     /// Updates the maximum allowed size of the dynamic table.
     pub fn update_max_dynamic_size(&mut self, size: u32) {
         self.dynamic_table.update_max_size(size);
     }
 
     /// Returns an iterator through all the headers.
-    /// 
+    ///
     /// It includes entries stored in the static and the dynamic table. Since
     /// the index `0` is an invalid index, the first returned item is at index
     /// `1`. The entries returned have indices ordered sequentially in the
     /// single address space (first the headers in the static table, followed by
     /// headers in the dynamic table).
     pub fn iter(&'a self) -> TableIter<'a> {
-        TableIter{ index: 1, table: &self }
+        TableIter {
+            index: 1,
+            table: &self,
+        }
     }
 
     /// Finds a header by its index.
-    /// 
+    ///
     /// According to the HPACK specification, the index `0` must be treated as
     /// an invalid index number. The value for index `0` in the static table is
     /// thus missing. The index of `0` will always return `None`.
@@ -154,7 +157,7 @@ impl<'a> Table<'a> {
     }
 
     /// Searches the static and the dynamic tables for the provided header.
-    /// 
+    ///
     /// It tries to match both the header name and value to one of the headers
     /// in the table. If no such header exists, then it falls back to the one
     /// that matched only the name. The returned match contains the index of the
@@ -242,7 +245,10 @@ mod test {
         let h2 = tbl.get(2).unwrap();
         assert_eq!(vec![h2.0, h2.1], vec![b":method".to_vec(), b"GET".to_vec()]);
         let h61 = tbl.get(61).unwrap();
-        assert_eq!(vec![h61.0, h61.1], vec![b"www-authenticate".to_vec(), vec![]]);
+        assert_eq!(
+            vec![h61.0, h61.1],
+            vec![b"www-authenticate".to_vec(), vec![]]
+        );
         let h62 = tbl.get(62).unwrap();
         assert_eq!(vec![h62.0, h62.1], vec![b"a0", b"b0"]);
     }

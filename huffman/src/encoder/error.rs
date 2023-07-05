@@ -1,5 +1,4 @@
-use std::error;
-use std::fmt;
+use std::{error, fmt};
 
 /// Contains error options that can be encountered while performing the encoding
 /// operations.

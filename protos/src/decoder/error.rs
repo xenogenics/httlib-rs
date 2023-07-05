@@ -1,7 +1,4 @@
-use std::error;
-use std::fmt;
-use std::io;
-use std::convert;
+use std::{convert, error, fmt, io};
 
 /// Contains error options that can be encountered while performing the decoding
 /// operations.
@@ -19,7 +16,7 @@ pub enum DecoderError {
     /// does not contain enough octets to complete the decoding.
     InputUnderflow,
 
-    /// Indicates that the decoder encountered an invalid tag number of a key. 
+    /// Indicates that the decoder encountered an invalid tag number of a key.
     /// A tag number must be unique per message and the value can be between `1`
     /// and `2^29 - 1`.
     InvalidTag,
@@ -31,7 +28,8 @@ impl From<io::Error> for DecoderError {
     }
 }
 
-impl From<convert::Infallible> for DecoderError { // until solved: https://github.com/rust-lang/rust/issues/64715
+impl From<convert::Infallible> for DecoderError {
+    // until solved: https://github.com/rust-lang/rust/issues/64715
     fn from(_: convert::Infallible) -> Self {
         unreachable!()
     }

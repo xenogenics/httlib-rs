@@ -1,6 +1,6 @@
-use std::fmt;
-use std::error;
-use httlib_huffman::{DecoderError as HuffmanError};
+use std::{error, fmt};
+
+use httlib_huffman::DecoderError as HuffmanError;
 
 /// Contains error options that can be encountered while performing the decoding
 /// of an HPACK header set.
@@ -34,7 +34,7 @@ pub enum DecoderError {
 impl From<HuffmanError> for DecoderError {
     fn from(err: HuffmanError) -> Self {
         match err {
-            HuffmanError::InvalidInput => Self::InvalidInput
+            HuffmanError::InvalidInput => Self::InvalidInput,
         }
     }
 }

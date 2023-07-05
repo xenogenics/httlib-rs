@@ -1,9 +1,9 @@
 use super::primitives::*;
 
 /// Provides decoder output format options.
-/// 
+///
 /// This is a list of all binary formats supported by the decoder.
-/// 
+///
 /// Note that bytes held by each key are considered "safe". Therefore, we should
 /// only pass valid vectors as key arguments when instantiating this object.
 /// According to this fact, the 'std::convert::From' property is implemented
@@ -275,11 +275,9 @@ impl From<DecoderLit> for Vec<u8> {
 impl From<DecoderLit> for String {
     fn from(lit: DecoderLit) -> Self {
         match lit {
-            DecoderLit::Bytes(byt) => {
-                match String::from_utf8(byt) {
-                    Ok(s) => s,
-                    _ => String::new(),
-                }
+            DecoderLit::Bytes(byt) => match String::from_utf8(byt) {
+                Ok(s) => s,
+                _ => String::new(),
             },
             _ => String::new(),
         }

@@ -1,30 +1,31 @@
 use core::convert::TryFrom;
+
 pub use super::DecoderError;
-use crate::{Typ, Encoder};
+use crate::{Encoder, Typ};
 
 /// Decodes a LEB128 encoded number from the provided `buf` and writes the
 /// resulting bytes into `dst`.
-/// 
+///
 /// Varints are a method for serializing integers with one or more bytes. The
 /// algorithm used here is known as [LEB128]. All bytes except the last have the
 /// most significant bit (MSB) set (`C`), so that the decoder can determine
 /// where the value ends. The other `7` bits (`N`) of each byte are intended to
 /// represent the number.
-/// 
+///
 /// LEB128 is an algorithm for encoding integers of arbitrary length in which
 /// the bytes are arranged in a little-endian sequence. However, the Protocol
 /// Buffers limit the size of the numbers to the supported data types.
-/// 
+///
 /// ```txt
 /// value = 150 (unsigned 32-bit)
-/// 
+///
 /// Standard varint decoding:
 ///    10010110 00000001 ... Encoded number.
 ///    00000001 10010110 ... Revert the array of bytes.
 ///    X0000001 X0010110 ... Remove MSB.
 ///    XXXXXXXX 10010110 ... Merge bits together (number 150 in bytes).
 /// ```
-/// 
+///
 /// On success, the number of read bytes is returned otherwise an error is
 /// thrown.
 pub fn decode_varint(buf: &[u8], dst: &mut u64) -> Result<usize, DecoderError> {
@@ -46,26 +47,23 @@ pub fn decode_varint(buf: &[u8], dst: &mut u64) -> Result<usize, DecoderError> {
 
 /// Decodes an encoded field key from the provided `buf` and writes the
 /// resulting bytes into `dst`.
-/// 
+///
 /// The key is encoded as a `uint32` varint type, and in the last `3` bits (`T`)
 /// contains the wire type. The key's field tag can thus be between `1` and
 /// `2^29 - 1` = `536,870,911` (`0` is not a valid tag number).
-/// 
+///
 /// ```txt
 /// tag = 12345 (unsigned 32-bit), type = 1 (Varint)
-/// 
+///
 /// 11001000 10000011 00000110 ... on the wire
 /// CNNNNNNN CNNNNNNN CNNNNTTT ... bits per type
-/// 
+///
 /// C = Contiunation, X = Number, T = Type
 /// ```
-/// 
+///
 /// On success, the number of read bytes is returned otherwise an error is
 /// thrown.
-pub fn decode_key(
-    buf: &[u8],
-    dst: &mut (u32, Typ),
-) -> Result<usize, DecoderError> {
+pub fn decode_key(buf: &[u8], dst: &mut (u32, Typ)) -> Result<usize, DecoderError> {
     let mut key = 0;
     let size = decode_varint(buf, &mut key)?;
     if key > u64::from(u32::MAX) {
@@ -86,8 +84,8 @@ pub fn decode_key(
 
 /// Decodes an encoded `bool` value from the provided `buf` and writes the
 /// resulting bytes into `dst`.
-/// 
-/// On success, the number of read bytes is returned otherwise an error is 
+///
+/// On success, the number of read bytes is returned otherwise an error is
 /// thrown.
 pub fn decode_bool(buf: &[u8], dst: &mut bool) -> Result<usize, DecoderError> {
     let mut val = 0;
@@ -98,17 +96,14 @@ pub fn decode_bool(buf: &[u8], dst: &mut bool) -> Result<usize, DecoderError> {
 
 /// Decodes a length-delimited encoded repeated `bool` value from the provided
 /// `buf` and writes the resulting bytes into `dst`.
-/// 
-/// On success, the number of read bytes is returned otherwise an error is 
+///
+/// On success, the number of read bytes is returned otherwise an error is
 /// thrown.
-pub fn decode_bool_vec(
-    buf: &[u8],
-    dst: &mut Vec<bool>,
-) -> Result<usize, DecoderError> {
+pub fn decode_bool_vec(buf: &[u8], dst: &mut Vec<bool>) -> Result<usize, DecoderError> {
     let total = buf.len();
     let mut size = 0;
     let mut items = vec![];
-    while total > size  || total == 0 {
+    while total > size || total == 0 {
         let mut val = false;
         size += decode_bool(&buf[size..], &mut val)?;
         items.push(val);
@@ -119,8 +114,8 @@ pub fn decode_bool_vec(
 
 /// Decodes an encoded `int32` value from the provided `buf` and writes the
 /// resulting bytes into `dst`.
-/// 
-/// On success, the number of read bytes is returned otherwise an error is 
+///
+/// On success, the number of read bytes is returned otherwise an error is
 /// thrown.
 pub fn decode_int32(buf: &[u8], dst: &mut i32) -> Result<usize, DecoderError> {
     let mut val = 0;
@@ -131,13 +126,10 @@ pub fn decode_int32(buf: &[u8], dst: &mut i32) -> Result<usize, DecoderError> {
 
 /// Decodes a length-delimited encoded repeated `int32` value from the provided
 /// `buf` and writes the resulting bytes into `dst`.
-/// 
-/// On success, the number of read bytes is returned otherwise an error is 
+///
+/// On success, the number of read bytes is returned otherwise an error is
 /// thrown.
-pub fn decode_int32_vec(
-    buf: &[u8],
-    dst: &mut Vec<i32>,
-) -> Result<usize, DecoderError> {
+pub fn decode_int32_vec(buf: &[u8], dst: &mut Vec<i32>) -> Result<usize, DecoderError> {
     let total = buf.len();
     let mut size = 0;
     let mut items = vec![];
@@ -152,8 +144,8 @@ pub fn decode_int32_vec(
 
 /// Decodes an encoded `int64` value from the provided `buf` and writes the
 /// resulting bytes into `dst`.
-/// 
-/// On success, the number of read bytes is returned otherwise an error is 
+///
+/// On success, the number of read bytes is returned otherwise an error is
 /// thrown.
 pub fn decode_int64(buf: &[u8], dst: &mut i64) -> Result<usize, DecoderError> {
     let mut val = 0;
@@ -164,13 +156,10 @@ pub fn decode_int64(buf: &[u8], dst: &mut i64) -> Result<usize, DecoderError> {
 
 /// Decodes a length-delimited encoded repeated `int64` value from the provided
 /// `buf` and writes the resulting bytes into `dst`.
-/// 
-/// On success, the number of read bytes is returned otherwise an error is 
+///
+/// On success, the number of read bytes is returned otherwise an error is
 /// thrown.
-pub fn decode_int64_vec(
-    buf: &[u8],
-    dst: &mut Vec<i64>,
-) -> Result<usize, DecoderError> {
+pub fn decode_int64_vec(buf: &[u8], dst: &mut Vec<i64>) -> Result<usize, DecoderError> {
     let total = buf.len();
     let mut size = 0;
     let mut items = vec![];
@@ -185,8 +174,8 @@ pub fn decode_int64_vec(
 
 /// Decodes an encoded `uint32` value from the provided `buf` and writes the
 /// resulting bytes into `dst`.
-/// 
-/// On success, the number of read bytes is returned otherwise an error is 
+///
+/// On success, the number of read bytes is returned otherwise an error is
 /// thrown.
 pub fn decode_uint32(buf: &[u8], dst: &mut u32) -> Result<usize, DecoderError> {
     let mut val = 0;
@@ -197,13 +186,10 @@ pub fn decode_uint32(buf: &[u8], dst: &mut u32) -> Result<usize, DecoderError> {
 
 /// Decodes a length-delimited encoded repeated `uint32` value from the provided
 /// `buf` and writes the resulting bytes into `dst`.
-/// 
-/// On success, the number of read bytes is returned otherwise an error is 
+///
+/// On success, the number of read bytes is returned otherwise an error is
 /// thrown.
-pub fn decode_uint32_vec(
-    buf: &[u8],
-    dst: &mut Vec<u32>,
-) -> Result<usize, DecoderError> {
+pub fn decode_uint32_vec(buf: &[u8], dst: &mut Vec<u32>) -> Result<usize, DecoderError> {
     let total = buf.len();
     let mut size = 0;
     let mut items = vec![];
@@ -218,8 +204,8 @@ pub fn decode_uint32_vec(
 
 /// Decodes an encoded `uint64` value from the provided `buf` and writes the
 /// resulting bytes into `dst`.
-/// 
-/// On success, the number of read bytes is returned otherwise an error is 
+///
+/// On success, the number of read bytes is returned otherwise an error is
 /// thrown.
 pub fn decode_uint64(buf: &[u8], dst: &mut u64) -> Result<usize, DecoderError> {
     decode_varint(buf, dst)
@@ -227,13 +213,10 @@ pub fn decode_uint64(buf: &[u8], dst: &mut u64) -> Result<usize, DecoderError> {
 
 /// Decodes a length-delimited encoded repeated `uint64` value from the provided
 /// `buf` and writes the resulting bytes into `dst`.
-/// 
-/// On success, the number of read bytes is returned otherwise an error is 
+///
+/// On success, the number of read bytes is returned otherwise an error is
 /// thrown.
-pub fn decode_uint64_vec(
-    buf: &[u8],
-    dst: &mut Vec<u64>,
-) -> Result<usize, DecoderError> {
+pub fn decode_uint64_vec(buf: &[u8], dst: &mut Vec<u64>) -> Result<usize, DecoderError> {
     let total = buf.len();
     let mut size = 0;
     let mut items = vec![];
@@ -248,7 +231,7 @@ pub fn decode_uint64_vec(
 
 /// Decodes an encoded `sint32` value from the provided `buf` and writes the
 /// resulting bytes into `dst`.
-/// 
+///
 /// There is a big difference between signed integer types (`sint32`) and the
 /// "standard" integer types (`int32`). If you use `int32` as the type for a
 /// negative number, the result is always ten bytes long, which makes a very
@@ -257,17 +240,17 @@ pub fn decode_uint64_vec(
 /// the resulting varint uses [ZigZag] encoding for efficiency. Essentially,
 /// this means that the positive and negative integers are zigzagged through, so
 /// that `-1` is encoded as `1`, `1` as `2`, `-2` as `3`, and so on.
-/// 
+///
 /// ```txt
 /// value = -12345 (signed 32-bit)
-/// 
+///
 /// Signed 32-bit varint decoding:
 ///           ... Start with the standard varint decoding.
 ///     24689 ... ZigZag value using (value >> 1) ^ -(value & 1).
 ///    -12345 ... Unsigned 32-bit integer.
 /// ```
-/// 
-/// On success, the number of read bytes is returned otherwise an error is 
+///
+/// On success, the number of read bytes is returned otherwise an error is
 /// thrown.
 pub fn decode_sint32(buf: &[u8], dst: &mut i32) -> Result<usize, DecoderError> {
     let mut val = 0;
@@ -278,13 +261,10 @@ pub fn decode_sint32(buf: &[u8], dst: &mut i32) -> Result<usize, DecoderError> {
 
 /// Decodes a length-delimited encoded repeated `sint32` value from the provided
 /// `buf` and writes the resulting bytes into `dst`.
-/// 
-/// On success, the number of read bytes is returned otherwise an error is 
+///
+/// On success, the number of read bytes is returned otherwise an error is
 /// thrown.
-pub fn decode_sint32_vec(
-    buf: &[u8],
-    dst: &mut Vec<i32>,
-) -> Result<usize, DecoderError> {
+pub fn decode_sint32_vec(buf: &[u8], dst: &mut Vec<i32>) -> Result<usize, DecoderError> {
     let total = buf.len();
     let mut size = 0;
     let mut items = vec![];
@@ -299,7 +279,7 @@ pub fn decode_sint32_vec(
 
 /// Decodes an encoded `sint64` value from the provided `buf` and writes the
 /// resulting bytes into `dst`.
-/// 
+///
 /// There is a big difference between signed integer types (`sint64`) and the
 /// "standard" integer types (`int64`). If you use `int64` as the type for a
 /// negative number, the result is always ten bytes long, which makes a very
@@ -308,17 +288,17 @@ pub fn decode_sint32_vec(
 /// the resulting varint uses [ZigZag] encoding for efficiency. Essentially,
 /// this means that the positive and negative integers are zigzagged through, so
 /// that `-1` is encoded as `1`, `1` as `2`, `-2` as `3`, and so on.
-/// 
+///
 /// ```txt
 /// value = -54321 (signed 64-bit)
-/// 
+///
 /// Signed 64-bit varint decoding:
 ///           ... Start with the standard varint decoding.
 ///    108641 ... ZigZag value using (value >> 1) ^ -(value & 1).
 ///    -54321 ... Unsigned 64-bit integer.
 /// ```
-/// 
-/// On success, the number of read bytes is returned otherwise an error is 
+///
+/// On success, the number of read bytes is returned otherwise an error is
 /// thrown.
 pub fn decode_sint64(buf: &[u8], dst: &mut i64) -> Result<usize, DecoderError> {
     let mut val = 0;
@@ -329,13 +309,10 @@ pub fn decode_sint64(buf: &[u8], dst: &mut i64) -> Result<usize, DecoderError> {
 
 /// Decodes a length-delimited encoded repeated `sint64` value from the provided
 /// `buf` and writes the resulting bytes into `dst`.
-/// 
-/// On success, the number of read bytes is returned otherwise an error is 
+///
+/// On success, the number of read bytes is returned otherwise an error is
 /// thrown.
-pub fn decode_sint64_vec(
-    buf: &[u8],
-    dst: &mut Vec<i64>,
-) -> Result<usize, DecoderError> {
+pub fn decode_sint64_vec(buf: &[u8], dst: &mut Vec<i64>) -> Result<usize, DecoderError> {
     let total = buf.len();
     let mut size = 0;
     let mut items = vec![];
@@ -350,27 +327,24 @@ pub fn decode_sint64_vec(
 
 /// Decodes an encoded `fixed32` value from the provided `buf` and writes the
 /// resulting bytes into `dst`.
-/// 
+///
 /// Such format represents an encoded 32-bit number with wire types `5`.
 /// Fixed-size number format is represented by bytes in little-endian byte order
 /// (reversed order).
-/// 
+///
 /// ```txt
 /// value = 12345 (signed 32-bit)
-/// 
+///
 /// Fixed-size decoding:
 ///    00111001 00110000 00000000 00000000 ... Encoded value in (little-endian) order.
 ///    00000000 00000000 00110000 00111001 ... Value in (big-endian) bytes.
 /// ```
-/// 
-/// On success, the number of read bytes is returned otherwise an error is 
+///
+/// On success, the number of read bytes is returned otherwise an error is
 /// thrown.
-pub fn decode_fixed32(
-    buf: &[u8],
-    dst: &mut u32,
-) -> Result<usize, DecoderError> {
+pub fn decode_fixed32(buf: &[u8], dst: &mut u32) -> Result<usize, DecoderError> {
     if buf.len() < 4 {
-        return Err(DecoderError::InputUnderflow)
+        return Err(DecoderError::InputUnderflow);
     }
     let mut bytes = [0u8; 4];
     bytes.clone_from_slice(&buf[0..4]);
@@ -380,13 +354,10 @@ pub fn decode_fixed32(
 
 /// Decodes a length-delimited encoded repeated `fixed32` value from the
 /// provided `buf` and writes the resulting bytes into `dst`.
-/// 
-/// On success, the number of read bytes is returned otherwise an error is 
+///
+/// On success, the number of read bytes is returned otherwise an error is
 /// thrown.
-pub fn decode_fixed32_vec(
-    buf: &[u8],
-    dst: &mut Vec<u32>,
-) -> Result<usize, DecoderError> {
+pub fn decode_fixed32_vec(buf: &[u8], dst: &mut Vec<u32>) -> Result<usize, DecoderError> {
     let total = buf.len();
     let mut size = 0;
     let mut items = vec![];
@@ -401,19 +372,16 @@ pub fn decode_fixed32_vec(
 
 /// Decodes an encoded `fixed64` value from the provided `buf` and writes the
 /// resulting bytes into `dst`.
-/// 
+///
 /// Such format represents an encoded 64-bit number with wire types `1`.
 /// Fixed-size number format is represented by bytes in little-endian byte order
 /// (reversed order).
-/// 
-/// On success, the number of read bytes is returned otherwise an error is 
+///
+/// On success, the number of read bytes is returned otherwise an error is
 /// thrown.
-pub fn decode_fixed64(
-    buf: &[u8],
-    dst: &mut u64,
-) -> Result<usize, DecoderError> {
+pub fn decode_fixed64(buf: &[u8], dst: &mut u64) -> Result<usize, DecoderError> {
     if buf.len() < 8 {
-        return Err(DecoderError::InputUnderflow)
+        return Err(DecoderError::InputUnderflow);
     }
     let mut bytes = [0u8; 8];
     bytes.clone_from_slice(&buf[0..8]);
@@ -423,13 +391,10 @@ pub fn decode_fixed64(
 
 /// Decodes a length-delimited encoded repeated `fixed64` value from the
 /// provided `buf` and writes the resulting bytes into `dst`.
-/// 
-/// On success, the number of read bytes is returned otherwise an error is 
+///
+/// On success, the number of read bytes is returned otherwise an error is
 /// thrown.
-pub fn decode_fixed64_vec(
-    buf: &[u8],
-    dst: &mut Vec<u64>,
-) -> Result<usize, DecoderError> {
+pub fn decode_fixed64_vec(buf: &[u8], dst: &mut Vec<u64>) -> Result<usize, DecoderError> {
     let total = buf.len();
     let mut size = 0;
     let mut items = vec![];
@@ -444,19 +409,16 @@ pub fn decode_fixed64_vec(
 
 /// Decodes an encoded `sfixed32` value from the provided `buf` and writes the
 /// resulting bytes into `dst`.
-/// 
+///
 /// Such format represents an encoded 32-bit number with wire types `5`.
 /// Fixed-size number format is represented by bytes in little-endian byte order
 /// (reversed order).
-/// 
-/// On success, the number of read bytes is returned otherwise an error is 
+///
+/// On success, the number of read bytes is returned otherwise an error is
 /// thrown.
-pub fn decode_sfixed32(
-    buf: &[u8],
-    dst: &mut i32,
-) -> Result<usize, DecoderError> {
+pub fn decode_sfixed32(buf: &[u8], dst: &mut i32) -> Result<usize, DecoderError> {
     if buf.len() < 4 {
-        return Err(DecoderError::InputUnderflow)
+        return Err(DecoderError::InputUnderflow);
     }
     let mut bytes = [0u8; 4];
     bytes.clone_from_slice(&buf[0..4]);
@@ -466,13 +428,10 @@ pub fn decode_sfixed32(
 
 /// Decodes a length-delimited encoded repeated `sfixed32` value from the
 /// provided `buf` and writes the resulting bytes into `dst`.
-/// 
-/// On success, the number of read bytes is returned otherwise an error is 
+///
+/// On success, the number of read bytes is returned otherwise an error is
 /// thrown.
-pub fn decode_sfixed32_vec(
-    buf: &[u8],
-    dst: &mut Vec<i32>,
-) -> Result<usize, DecoderError> {
+pub fn decode_sfixed32_vec(buf: &[u8], dst: &mut Vec<i32>) -> Result<usize, DecoderError> {
     let total = buf.len();
     let mut size = 0;
     let mut items = vec![];
@@ -487,19 +446,16 @@ pub fn decode_sfixed32_vec(
 
 /// Decodes an encoded `sfixed64` value from the provided `buf` and writes the
 /// resulting bytes into `dst`.
-/// 
+///
 /// Such format represents an encoded 64-bit number with wire types `1`.
 /// Fixed-size number format is represented by bytes in little-endian byte order
 /// (reversed order).
-/// 
-/// On success, the number of read bytes is returned otherwise an error is 
+///
+/// On success, the number of read bytes is returned otherwise an error is
 /// thrown.
-pub fn decode_sfixed64(
-    buf: &[u8],
-    dst: &mut i64,
-) -> Result<usize, DecoderError> {
+pub fn decode_sfixed64(buf: &[u8], dst: &mut i64) -> Result<usize, DecoderError> {
     if buf.len() < 8 {
-        return Err(DecoderError::InputUnderflow)
+        return Err(DecoderError::InputUnderflow);
     }
     let mut bytes = [0u8; 8];
     bytes.clone_from_slice(&buf[0..8]);
@@ -509,13 +465,10 @@ pub fn decode_sfixed64(
 
 /// Decodes a length-delimited encoded repeated `sfixed64` value from the
 /// provided `buf` and writes the resulting bytes into `dst`.
-/// 
-/// On success, the number of read bytes is returned otherwise an error is 
+///
+/// On success, the number of read bytes is returned otherwise an error is
 /// thrown.
-pub fn decode_sfixed64_vec(
-    buf: &[u8],
-    dst: &mut Vec<i64>,
-) -> Result<usize, DecoderError> {
+pub fn decode_sfixed64_vec(buf: &[u8], dst: &mut Vec<i64>) -> Result<usize, DecoderError> {
     let total = buf.len();
     let mut size = 0;
     let mut items = vec![];
@@ -530,15 +483,15 @@ pub fn decode_sfixed64_vec(
 
 /// Decodes an encoded `float` value from the provided `buf` and writes the
 /// resulting bytes into `dst`.
-/// 
+///
 /// Float is encoded as a 32-bit number with wire types `5`. Fixed-size number
 /// format is represented by bytes in little-endian byte order (reversed order).
-/// 
-/// On success, the number of read bytes is returned otherwise an error is 
+///
+/// On success, the number of read bytes is returned otherwise an error is
 /// thrown.
 pub fn decode_float(buf: &[u8], dst: &mut f32) -> Result<usize, DecoderError> {
     if buf.len() < 4 {
-        return Err(DecoderError::InputUnderflow)
+        return Err(DecoderError::InputUnderflow);
     }
     let mut bytes = [0u8; 4];
     bytes.clone_from_slice(&buf[0..4]);
@@ -548,13 +501,10 @@ pub fn decode_float(buf: &[u8], dst: &mut f32) -> Result<usize, DecoderError> {
 
 /// Decodes a length-delimited encoded repeated `float` value from the provided
 /// `buf` and writes the resulting bytes into `dst`.
-/// 
-/// On success, the number of read bytes is returned otherwise an error is 
+///
+/// On success, the number of read bytes is returned otherwise an error is
 /// thrown.
-pub fn decode_float_vec(
-    buf: &[u8],
-    dst: &mut Vec<f32>,
-) -> Result<usize, DecoderError> {
+pub fn decode_float_vec(buf: &[u8], dst: &mut Vec<f32>) -> Result<usize, DecoderError> {
     let total = buf.len();
     let mut size = 0;
     let mut items = vec![];
@@ -569,15 +519,15 @@ pub fn decode_float_vec(
 
 /// Decodes an encoded `double` value from the provided `buf` and writes the
 /// resulting bytes into `dst`.
-/// 
+///
 /// Double is encoded as a 64-bit number with wire types `1`. Fixed-size number
 /// format is represented by bytes in little-endian byte order (reversed order).
-/// 
-/// On success, the number of read bytes is returned otherwise an error is 
+///
+/// On success, the number of read bytes is returned otherwise an error is
 /// thrown.
 pub fn decode_double(buf: &[u8], dst: &mut f64) -> Result<usize, DecoderError> {
     if buf.len() < 8 {
-        return Err(DecoderError::InputUnderflow)
+        return Err(DecoderError::InputUnderflow);
     }
     let mut bytes = [0u8; 8];
     bytes.clone_from_slice(&buf[0..8]);
@@ -587,13 +537,10 @@ pub fn decode_double(buf: &[u8], dst: &mut f64) -> Result<usize, DecoderError> {
 
 /// Decodes a length-delimited encoded repeated `double` value from the provided
 /// `buf` and writes the resulting bytes into `dst`.
-/// 
-/// On success, the number of read bytes is returned otherwise an error is 
+///
+/// On success, the number of read bytes is returned otherwise an error is
 /// thrown.
-pub fn decode_double_vec(
-    buf: &[u8],
-    dst: &mut Vec<f64>,
-) -> Result<usize, DecoderError> {
+pub fn decode_double_vec(buf: &[u8], dst: &mut Vec<f64>) -> Result<usize, DecoderError> {
     let total = buf.len();
     let mut size = 0;
     let mut items = vec![];
@@ -608,13 +555,10 @@ pub fn decode_double_vec(
 
 /// Reads bytes for value with wire type `0` from the provided `but` and writes
 /// the resulting bytes into `dst`.
-/// 
-/// On success, the number of read bytes is returned otherwise an error is 
+///
+/// On success, the number of read bytes is returned otherwise an error is
 /// thrown.
-pub fn extract_varint(
-    buf: &[u8],
-    dst: &mut Vec<u8>,
-) -> Result<usize, DecoderError> {
+pub fn extract_varint(buf: &[u8], dst: &mut Vec<u8>) -> Result<usize, DecoderError> {
     let mut bytes = vec![];
     let mut count = 0;
     loop {
@@ -633,13 +577,10 @@ pub fn extract_varint(
 
 /// Reads bytes for value with wire type `5` from the provided `but` and writes
 /// the resulting bytes into `dst`.
-/// 
-/// On success, the number of read bytes is returned otherwise an error is 
+///
+/// On success, the number of read bytes is returned otherwise an error is
 /// thrown.
-pub fn extract_bit32(
-    buf: &[u8],
-    dst: &mut Vec<u8>,
-) -> Result<usize, DecoderError> {
+pub fn extract_bit32(buf: &[u8], dst: &mut Vec<u8>) -> Result<usize, DecoderError> {
     if buf.len() < 4 {
         return Err(DecoderError::InputUnderflow);
     }
@@ -649,13 +590,10 @@ pub fn extract_bit32(
 
 /// Reads bytes for value with wire type `1` from the provided `but` and writes
 /// the resulting bytes into `dst`.
-/// 
-/// On success, the number of read bytes is returned otherwise an error is 
+///
+/// On success, the number of read bytes is returned otherwise an error is
 /// thrown.
-pub fn extract_bit64(
-    buf: &[u8],
-    dst: &mut Vec<u8>,
-) -> Result<usize, DecoderError> {
+pub fn extract_bit64(buf: &[u8], dst: &mut Vec<u8>) -> Result<usize, DecoderError> {
     if buf.len() < 8 {
         return Err(DecoderError::InputUnderflow);
     }
@@ -665,14 +603,10 @@ pub fn extract_bit64(
 
 /// Reads bytes for value with wire type `2` from the provided `but` and writes
 /// the resulting bytes into `dst`.
-/// 
-/// On success, the number of read bytes is returned otherwise an error is 
+///
+/// On success, the number of read bytes is returned otherwise an error is
 /// thrown.
-pub fn extract_ld(
-    buf: &[u8],
-    size: u64,
-    dst: &mut Vec<u8>,
-) -> Result<usize, DecoderError> {
+pub fn extract_ld(buf: &[u8], size: u64, dst: &mut Vec<u8>) -> Result<usize, DecoderError> {
     let size = size as usize;
     if buf.len() < size {
         return Err(DecoderError::InputUnderflow);
@@ -736,7 +670,9 @@ mod test {
     #[test]
     fn decodes_int32() {
         let mut dst = 0;
-        let buf = vec![0x80, 0x80, 0x80, 0x80, 0xf8, 0xff, 0xff, 0xff, 0xff, 0x01, 0xff];
+        let buf = vec![
+            0x80, 0x80, 0x80, 0x80, 0xf8, 0xff, 0xff, 0xff, 0xff, 0x01, 0xff,
+        ];
         let size = decode_int32(&buf, &mut dst).unwrap();
         assert_eq!(dst, i32::MIN);
         assert_eq!(size, 10);
@@ -787,7 +723,7 @@ mod test {
         assert_eq!(dst, u64::MAX);
         assert_eq!(size, 10);
     }
-    
+
     /// Should decode an encoded numeric value into `sint32` data type.
     #[test]
     fn decodes_sint32() {
@@ -863,7 +799,7 @@ mod test {
         assert_eq!(dst, i32::MAX);
         assert_eq!(size, 4);
     }
-    
+
     /// Should decode an encoded numeric value into `sfixed64` data type.
     #[test]
     fn decodes_sfixed64() {

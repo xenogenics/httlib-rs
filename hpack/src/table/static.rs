@@ -5,7 +5,7 @@ pub type StaticTable<'a> = &'a [(&'a [u8], &'a [u8])];
 /// the HPACK specification ([Appendix A]). The static table was created from
 /// the most frequent header fields used by popular web sites, with the addition
 /// of HTTP/2-specific [pseudo-header] fields.
-/// 
+///
 /// [Appendix A]: https://tools.ietf.org/html/rfc7541#appendix-A
 /// [pseudo-header]: https://tools.ietf.org/html/rfc7540#section-8.1.2.1
 pub static STATIC_TABLE: &'static [(&'static [u8], &'static [u8])] = &[

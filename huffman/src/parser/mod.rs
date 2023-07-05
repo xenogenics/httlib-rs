@@ -1,30 +1,30 @@
 //! Provides features for parsing [Huffman code] table provided by the [HPACK]
 //! documentation.
-//! 
+//!
 //! [HPACK] provides a pre-created [Huffman code] table for encoding [ASCII]
 //! characters to the Huffman sequence. This Huffman code was generated from
 //! statistics obtained on a large sample of HTTP headers.
-//! 
+//!
 //! The parser module is responsible for parsing the [Huffman code] table into
 //! the static Rust source code. This module was used to create the ENCODE_TABLE
 //! constant which can be found in the `encode::table` module.
-//! 
+//!
 //! You will probably never use this module while developing applications.
-//! 
+//!
 //! [ASCII]: https://en.wikipedia.org/wiki/ASCII
 //! [HPACK]: https://tools.ietf.org/html/rfc7541
 //! [Huffman code]: https://tools.ietf.org/html/rfc7541#appendix-B
 
 /// Parses the HPACK's static Huffman table. The function expects data to be in
 /// format as provided by the spec (7.2).
-/// 
+///
 /// **Example:**
-/// 
+///
 /// ```rust
 /// use std::fs;
 /// use std::path::Path;
 /// use httlib_huffman::parser::parse;
-/// 
+///
 /// let path = Path::new("assets/hpack-huffman.txt");
 /// let data = fs::read_to_string(path).expect("Can't read file.");
 /// let codings = parse(&data);
@@ -45,7 +45,6 @@ pub fn parse(data: &str) -> Vec<(u16, u32)> {
 /// contains a tuple of the number of bits for the code representing the symbol
 /// and Huffman LSB value.
 fn parse_line(line: &str) -> (u16, u32) {
-
     let mut msb = vec![];
     for &b in &line.as_bytes()[12..45] {
         match b {
@@ -64,14 +63,14 @@ fn parse_line(line: &str) -> (u16, u32) {
 
 #[cfg(test)]
 mod tests {
-    use std::fs;
-    use std::path::Path;
+    use std::{fs, path::Path};
+
     use super::*;
 
-    /// Should read the text file `assets/hpack-huffman.txt` and parse the 
-    /// content into 2-dimensional table that can be used in Rust code. 
+    /// Should read the text file `assets/hpack-huffman.txt` and parse the
+    /// content into 2-dimensional table that can be used in Rust code.
     #[test]
-    fn parses_huffman_table() { 
+    fn parses_huffman_table() {
         let path = Path::new("assets/hpack-huffman.txt");
         let data = fs::read_to_string(path).expect("Can't read file.");
         let table = parse(&data);
