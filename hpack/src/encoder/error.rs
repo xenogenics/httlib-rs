@@ -23,6 +23,9 @@ pub enum EncoderError {
     /// threshold (5 bytes are chosen by this implementation). This can also
     /// happen while encoding too long string.
     IntegerOverflow,
+
+    /// Indicates that a low-level I/O operation failed.
+    IoError,
 }
 
 impl From<HuffmanError> for EncoderError {
@@ -33,6 +36,12 @@ impl From<HuffmanError> for EncoderError {
     }
 }
 
+impl From<std::io::Error> for EncoderError {
+    fn from(_: std::io::Error) -> Self {
+        Self::IoError
+    }
+}
+
 impl fmt::Display for EncoderError {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         match self {
@@ -40,6 +49,7 @@ impl fmt::Display for EncoderError {
             Self::InvalidIndex => write!(fmt, "Invalid index."),
             Self::InvalidPrefix => write!(fmt, "Invalid prefix."),
             Self::IntegerOverflow => write!(fmt, "Too many bytes."),
+            Self::IoError => write!(fmt, "I/O error."),
         }
     }
 }

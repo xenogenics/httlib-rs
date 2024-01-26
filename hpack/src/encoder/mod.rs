@@ -65,6 +65,8 @@ mod error;
 mod input;
 mod primitives;
 
+use std::io::Write;
+
 pub use error::*;
 pub use input::*;
 use primitives::*;
@@ -139,13 +141,10 @@ impl<'a> Encoder<'a> {
     ///
     /// [6.2.1.]: https://tools.ietf.org/html/rfc7541#section-6.2.1
     /// [6.2.3.]: https://tools.ietf.org/html/rfc7541#section-6.2.3
-    pub fn encode<'b, 'c: 'b, F>(
-        &mut self,
-        field: F,
-        dst: &'c mut Vec<u8>,
-    ) -> Result<(), EncoderError>
+    pub fn encode<'b, 'c: 'b, F, W>(&mut self, field: F, dst: W) -> Result<(), EncoderError>
     where
         F: Into<EncoderInput<'b>>,
+        W: Write,
     {
         match field.into() {
             EncoderInput::Indexed(index) => self.encode_indexed(index, dst),
@@ -199,7 +198,7 @@ impl<'a> Encoder<'a> {
     /// ```
     ///
     /// [6.1.]: https://tools.ietf.org/html/rfc7541#section-6.1
-    pub fn encode_indexed(&self, index: u32, dst: &mut Vec<u8>) -> Result<(), EncoderError> {
+    pub fn encode_indexed<W: Write>(&self, index: u32, dst: W) -> Result<(), EncoderError> {
         if self.table.get(index).is_none() {
             return Err(EncoderError::InvalidIndex);
         }
@@ -263,12 +262,12 @@ impl<'a> Encoder<'a> {
     /// [6.2.1.]: https://tools.ietf.org/html/rfc7541#section-6.2.1
     /// [6.2.2.]: https://tools.ietf.org/html/rfc7541#section-6.2.2
     /// [6.2.3.]: https://tools.ietf.org/html/rfc7541#section-6.2.3
-    pub fn encode_indexed_name(
+    pub fn encode_indexed_name<W: Write>(
         &mut self,
         index: u32,
         value: &[u8],
         flags: u8,
-        dst: &mut Vec<u8>,
+        mut dst: W,
     ) -> Result<(), EncoderError> {
         let name = if let Some(entry) = self.table.get(index) {
             entry.0.to_vec()
@@ -278,12 +277,12 @@ impl<'a> Encoder<'a> {
 
         if flags & 0x4 == 0x4 {
             self.table.insert(name, value.to_vec());
-            encode_integer(index, 0x40, 6, dst)?;
+            encode_integer(index, 0x40, 6, &mut dst)?;
         } else if flags & 0x8 == 0x8 {
-            encode_integer(index, 0b00010000, 4, dst)?;
+            encode_integer(index, 0b00010000, 4, &mut dst)?;
         } else {
             // without indexing
-            encode_integer(index, 0x0, 4, dst)?;
+            encode_integer(index, 0x0, 4, &mut dst)?;
         }
 
         encode_string(value, flags & 0x2 == 0x2, dst)
@@ -357,24 +356,24 @@ impl<'a> Encoder<'a> {
     /// [6.2.1.]: https://tools.ietf.org/html/rfc7541#section-6.2.1
     /// [6.2.2.]: https://tools.ietf.org/html/rfc7541#section-6.2.2
     /// [6.2.3.]: https://tools.ietf.org/html/rfc7541#section-6.2.3
-    pub fn encode_literal(
+    pub fn encode_literal<W: Write>(
         &mut self,
         name: &[u8],
         value: &[u8],
         flags: u8,
-        dst: &mut Vec<u8>,
+        mut dst: W,
     ) -> Result<(), EncoderError> {
         if flags & 0x4 == 0x4 {
-            dst.push(0x40);
+            dst.write_all(&[0x40])?;
             self.table.insert(name.to_vec(), value.to_vec());
         } else if flags & 0x8 == 0x8 {
-            dst.push(0b00010000);
+            dst.write_all(&[0b00010000])?;
         } else {
             // without indexing
-            dst.push(0x0);
+            dst.write_all(&[0x0])?;
         }
 
-        encode_string(name, flags & 0x1 == 0x1, dst)?;
+        encode_string(name, flags & 0x1 == 0x1, &mut dst)?;
         encode_string(value, flags & 0x2 == 0x2, dst)
     }
 
@@ -396,10 +395,10 @@ impl<'a> Encoder<'a> {
     /// ```
     ///
     /// [6.3]: https://tools.ietf.org/html/rfc7541#section-6.3
-    pub fn update_max_dynamic_size(
+    pub fn update_max_dynamic_size<W: Write>(
         &mut self,
         size: u32,
-        dst: &mut Vec<u8>,
+        dst: W,
     ) -> Result<(), EncoderError> {
         self.table.update_max_dynamic_size(size);
         encode_integer(size, 0b00100000, 5, dst)

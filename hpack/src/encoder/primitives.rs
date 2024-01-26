@@ -1,3 +1,5 @@
+use std::io::Write;
+
 use super::*;
 
 /// Encodes an integer number to the integer representation defined by HPACK
@@ -41,11 +43,11 @@ use super::*;
 /// ```
 ///
 /// [5.1.]: https://tools.ietf.org/html/rfc7541#section-5.1
-pub(crate) fn encode_integer(
+pub(crate) fn encode_integer<W: Write>(
     value: u32,
     flags: u8,
     prefix_size: u8,
-    dst: &mut Vec<u8>,
+    mut dst: W,
 ) -> Result<(), EncoderError> {
     if prefix_size < 1 || prefix_size > 8 {
         return Err(EncoderError::InvalidPrefix);
@@ -56,17 +58,17 @@ pub(crate) fn encode_integer(
 
     if value < mask as u32 {
         // small enought to fit intothe first byte
-        dst.push(flags | value as u8);
+        dst.write_all(&[flags | value as u8])?;
         return Ok(());
     }
 
     let mut value = value - mask as u32;
-    dst.push(flags | mask as u8); // first byte
+    dst.write_all(&[flags | mask as u8])?; // first byte
     while value >= 128 {
-        dst.push(0b10000000 | value as u8); // byte with continuation flag
+        dst.write_all(&[0b10000000 | value as u8])?; // byte with continuation flag
         value >>= 7;
     }
-    dst.push(value as u8); // last byte
+    dst.write_all(&[value as u8])?; // last byte
     Ok(())
 }
 
@@ -88,10 +90,10 @@ pub(crate) fn encode_integer(
 /// ```
 ///
 /// [5.2.]: https://tools.ietf.org/html/rfc7541#section-5.2
-pub(crate) fn encode_string(
+pub(crate) fn encode_string<W: Write>(
     data: &[u8],
     huffman: bool,
-    dst: &mut Vec<u8>,
+    mut dst: W,
 ) -> Result<(), EncoderError> {
     let (flags, bytes) = if huffman {
         let mut dst = Vec::new();
@@ -106,8 +108,8 @@ pub(crate) fn encode_string(
         return Err(EncoderError::IntegerOverflow);
     }
 
-    encode_integer(len as u32, flags, 7, dst)?; // first byte
-    dst.append(&mut bytes.to_vec()); // the rest of bytes
+    encode_integer(len as u32, flags, 7, &mut dst)?; // first byte
+    dst.write_all(bytes.as_slice())?; // the rest of bytes
 
     return Ok(());
 }
